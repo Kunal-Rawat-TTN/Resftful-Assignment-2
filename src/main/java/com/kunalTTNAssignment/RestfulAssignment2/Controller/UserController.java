@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ public class UserController {
 
     UserService userService;
 
+    @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }
@@ -50,7 +52,7 @@ public class UserController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@Parameter(name = "id", description = "User id", example = "1")
-                                                @PathVariable Integer id) {
+                                            @PathVariable Integer id) {
         return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
     }
 
@@ -61,21 +63,23 @@ public class UserController {
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUserById(@Parameter(name = "id", description = "User id", example = "1")
-                                                     @PathVariable Integer id) {
+                                                 @PathVariable Integer id) {
         userService.deleteUserById(id);
         return new ResponseEntity<>("User ID " + id + " deleted !", HttpStatus.OK);
     }
 
     @PostMapping("/staticPassword")
-    public ResponseEntity<User> createUserWithStaticPassword(@RequestBody User user)
-    {
-        return new ResponseEntity<>(userService.createUserWithPassword(user),HttpStatus.OK);
+    public ResponseEntity<User> createUserWithStaticPassword(@RequestBody User user) {
+        return new ResponseEntity<>(userService.createUserWithPassword(user), HttpStatus.OK);
     }
 
     @PostMapping("/dynamicPassword")
-    public ResponseEntity<MappingJacksonValue> createUserWithDynamicPassword(@RequestBody User user)
-    {
-        return new ResponseEntity<>(userService.createUserWithDynamicPassword(user),HttpStatus.OK);
+    public ResponseEntity<MappingJacksonValue> createUserWithDynamicPassword(@RequestBody User user) {
+        return new ResponseEntity<>(userService.createUserWithDynamicPassword(user), HttpStatus.OK);
     }
 
+    @GetMapping("/internationalized-message")
+    public ResponseEntity<String> getInternationalizedMessage(@RequestParam String username) {
+        return new ResponseEntity<>(userService.getInternationalizedMessage(username), HttpStatus.OK);
+    }
 }

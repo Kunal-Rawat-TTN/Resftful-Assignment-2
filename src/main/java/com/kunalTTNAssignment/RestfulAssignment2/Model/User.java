@@ -13,7 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@JsonFilter("passwordFilter")
+//@JsonFilter("passwordFilter")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,7 +26,7 @@ public class User {
     @Schema(name = "age", example = "22", required = true)
     Integer age;
 
-//    @JsonIgnore
+    @JsonIgnore
     String password;
 }
 

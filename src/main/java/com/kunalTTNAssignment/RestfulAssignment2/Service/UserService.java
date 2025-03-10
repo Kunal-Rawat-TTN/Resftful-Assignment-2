@@ -3,16 +3,21 @@ package com.kunalTTNAssignment.RestfulAssignment2.Service;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import com.kunalTTNAssignment.RestfulAssignment2.Controller.TopicController;
 import com.kunalTTNAssignment.RestfulAssignment2.Model.User;
 import com.kunalTTNAssignment.RestfulAssignment2.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Locale;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
 public class UserService {
@@ -36,9 +41,13 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User getUserById(Integer id)
+    public EntityModel<User> getUserById(Integer id)
     {
-        return userRepository.findById(id).orElseThrow(NullPointerException::new);
+        User user=userRepository.findById(id).orElseThrow(NullPointerException::new);
+        EntityModel<User> entityModel= EntityModel.of(user);
+        WebMvcLinkBuilder link= WebMvcLinkBuilder.linkTo(methodOn(TopicController.class).getAllTopics());
+        entityModel.add(link.withRel("all-topics"));
+        return entityModel;
     }
 
     public void deleteUserById(Integer id)
@@ -63,7 +72,6 @@ public class UserService {
     public String getInternationalizedMessage(String username)
     {
         Locale locale = LocaleContextHolder.getLocale();
-        String message = messageSource.getMessage("hello.message", null, "Default Message", locale)+" "+username;
-        return message;
+        return messageSource.getMessage("hello.message", null, "Default Message", locale)+" "+username;
     }
 }

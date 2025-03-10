@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -51,7 +52,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "Not found - The user was not found")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@Parameter(name = "id", description = "User id", example = "1")
+    public ResponseEntity<EntityModel<User>> getUserById(@Parameter(name = "id", description = "User id", example = "1")
                                             @PathVariable Integer id) {
         return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
     }
